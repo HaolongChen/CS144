@@ -11,17 +11,17 @@ void get_URL( const string& host, const string& path )
 {
   // cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
   // cerr << "Warning: get_URL() has not been implemented yet.\n";
-  Address address(host,"http");
+  Address address( host, "http" );
   TCPSocket tcp;
-  tcp.connect(address);
+  tcp.connect( address );
   // tcp.write("GET /hello HTTP/1.1\r\nHost: cs144.keithw.org\r\nConnection: close\r\n");
-  tcp.write("GET " + path + " HTTP/1.1\r\n");
-  tcp.write("Host: " + host + "\r\n");
-  tcp.write("Connection: close\r\n");
-  tcp.write("\r\n");
-  string buffer{""};
-  while(!tcp.eof()){
-    tcp.read(buffer);
+  tcp.write( "GET " + path + " HTTP/1.1\r\n" );
+  tcp.write( "Host: " + host + "\r\n" );
+  tcp.write( "Connection: close\r\n" );
+  tcp.write( "\r\n" );
+  string buffer { "" };
+  while ( !tcp.eof() ) {
+    tcp.read( buffer );
     cout << buffer;
   }
   tcp.close();

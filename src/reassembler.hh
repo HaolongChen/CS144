@@ -1,12 +1,25 @@
 #pragma once
 
 #include "byte_stream.hh"
+#include <vector>
 
 class Reassembler
 {
 public:
   // Construct Reassembler to write into given ByteStream.
-  explicit Reassembler( ByteStream&& output ) : output_( std::move( output ) ) {}
+  explicit Reassembler( ByteStream&& output )
+    : output_( std::move( output ) )
+    , buf_( 9999999 )
+    , flag_( 9999999 )
+    , capacity_( output_.writer().available_capacity() )
+    , unassembled_( 0 )
+    , index_( 0 )
+    , buf_index_( output_.writer().bytes_pushed() )
+    , eof_( false )
+    , last_send_( 0 )
+    , last_index_( 99999999 )
+    , last_length_( 99999999 )
+  {}
 
   /*
    * Insert a new substring to be reassembled into a ByteStream.
@@ -34,6 +47,8 @@ public:
   // This function is for testing only; don't add extra state to support it.
   uint64_t count_bytes_pending() const;
 
+  void print( void );
+
   // Access output stream reader
   Reader& reader() { return output_.reader(); }
   const Reader& reader() const { return output_.reader(); }
@@ -43,4 +58,14 @@ public:
 
 private:
   ByteStream output_;
+  std::vector<char> buf_;
+  std::vector<bool> flag_;
+  uint64_t capacity_;
+  uint64_t unassembled_;
+  uint64_t index_;
+  uint64_t buf_index_;
+  bool eof_;
+  uint64_t last_send_;
+  uint64_t last_index_;
+  uint64_t last_length_;
 };

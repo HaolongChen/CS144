@@ -69,10 +69,12 @@ int main()
       test.execute( Insert { { 0x30, 0x0d, 0x62, 0x00, 0x61, 0x00, 0x00 }, 9 } );
       test.execute( BytesPushed( 0 ) );
       test.execute( ReadAll( "" ) );
+      test.execute( BytesPending( 7 ) );
       test.execute( IsFinished { false } );
 
       test.execute( Insert { { 0x0d, 0x0a, 0x63, 0x61, 0x0a, 0x66 }, 0 } );
       test.execute( BytesPushed( 6 ) );
+      test.execute( BytesPending( 7 ) );
 
       test.execute( Insert { { 0x0d, 0x0a, 0x63, 0x61, 0x0a, 0x66, 0x65, 0x20, 0x62, 0x30 }, 0 } );
       test.execute( BytesPushed( 16 ) );
