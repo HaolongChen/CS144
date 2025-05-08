@@ -1,6 +1,5 @@
 #include "tcp_receiver.hh"
 #include "debug.hh"
-#include <iostream>
 
 using namespace std;
 
@@ -8,7 +7,6 @@ void TCPReceiver::receive( TCPSenderMessage message )
 {
   // Your code here.
   if ( message.RST ) {
-    cout << "set!!!" << endl;
     rst_ = true;
     reassembler_.set_error();
     return;

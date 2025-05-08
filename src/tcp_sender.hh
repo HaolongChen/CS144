@@ -3,6 +3,7 @@
 #include "byte_stream.hh"
 #include "tcp_receiver_message.hh"
 #include "tcp_sender_message.hh"
+#include <deque>
 
 #include <functional>
 
@@ -11,8 +12,26 @@ class TCPSender
 public:
   /* Construct TCP sender with given default Retransmission Timeout and possible ISN */
   TCPSender( ByteStream&& input, Wrap32 isn, uint64_t initial_RTO_ms )
-    : input_( std::move( input ) ), isn_( isn ), initial_RTO_ms_( initial_RTO_ms )
-  {}
+    : input_( std::move( input ) )
+    , isn_( isn )
+    , initial_RTO_ms_( initial_RTO_ms )
+    , sent_SYN_( false )
+    , sent_FIN_( false )
+    , current_RTO_ms_( initial_RTO_ms )
+    , outstanding_collections_()
+    , outstanding_bytes_( 0 )
+    , received_msg_()
+    , window_size_( 1 )
+    , abs_secno_( 0 )
+    , consecutive_retransmissions_nums_( 0 )
+    , has_error_( false )
+    , start_timer_( false )
+    , receive_abs_secno_( 0 )
+    , ticks_( 0 )
+  {
+    received_msg_.ackno = isn_;
+    received_msg_.window_size = 1;
+  }
 
   /* Generate an empty TCPSenderMessage */
   TCPSenderMessage make_empty_message() const;
@@ -42,4 +61,17 @@ private:
   ByteStream input_;
   Wrap32 isn_;
   uint64_t initial_RTO_ms_;
+  bool sent_SYN_;
+  bool sent_FIN_;
+  uint64_t current_RTO_ms_;
+  std::deque<TCPSenderMessage> outstanding_collections_;
+  uint64_t outstanding_bytes_;
+  TCPReceiverMessage received_msg_;
+  uint16_t window_size_;
+  uint64_t abs_secno_;
+  uint64_t consecutive_retransmissions_nums_;
+  bool has_error_;
+  bool start_timer_;
+  uint64_t receive_abs_secno_;
+  uint64_t ticks_;
 };
